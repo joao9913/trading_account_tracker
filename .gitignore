@@ -12,6 +12,8 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-
 #Database .env
 .env
+
+#Ignore pg_pw.txt
+pg_pw.txt
