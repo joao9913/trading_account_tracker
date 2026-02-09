@@ -1,5 +1,5 @@
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import Column, Integer, Numeric, String, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, Numeric, String, ForeignKey, Date
 from app.database import Base
 
 class Account(Base):
@@ -11,6 +11,7 @@ class Account(Base):
     current_balance = Column(Numeric(12, 2), nullable=False)
     profit_target = Column(Numeric(12, 2), nullable=False)
     max_drawdown = Column(Numeric(12, 2), nullable=False)
+    starting_date = Column(Date, nullable=False)
 
     strategies = relationship("Strategy", back_populates="account", cascade="all, delete-orphan")
 
