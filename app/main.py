@@ -66,7 +66,7 @@ def create_strategy(payload: StrategyCreate, db: Session = Depends(get_db)):
 def create_trade(payload: TradeCreate, db: Session = Depends(get_db)):
     strategy_exists = db.get(Strategy, payload.strategy_id)
     if not strategy_exists:
-        raise HTTPException(status_code=404, detail="Account does not exist.")
+        raise HTTPException(status_code=404, detail="Strategy does not exist.")
 
     trade = Trade(**payload.model_dump())
     db.add(trade)
