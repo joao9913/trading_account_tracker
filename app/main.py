@@ -62,14 +62,19 @@ def create_strategy(payload: StrategyCreate, db: Session = Depends(get_db)):
     return strategy
 
 # TRADE POST ENDPOINTS
-@app.post("/trades", status_code=201)
+@app.post("/mt5/trades", status_code=201)
 def create_trade(payload: TradeCreate, db: Session = Depends(get_db)):
-    strategy_exists = db.get(Strategy, payload.strategy_id)
-    if not strategy_exists:
+    strategy = db.get(Strategy, payload.strategy_id)
+    if not strategy:
         raise HTTPException(status_code=404, detail="Strategy does not exist.")
 
     trade = Trade(**payload.model_dump())
     db.add(trade)
+
+    #Update account current balance
+    account = strategy.account
+    account.current_balance = payload.current_balance
+
     db.commit()
     db.refresh(trade)
 

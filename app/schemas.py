@@ -21,3 +21,4 @@ class TradeCreate(BaseModel):
     open_datetime: date
     close_datetime: date
     ticket_id: int
+    current_balance: float
