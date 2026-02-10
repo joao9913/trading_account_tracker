@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from datetime import date
+from datetime import date, datetime
 
 class AccountCreate(BaseModel):
     id: int
@@ -18,7 +18,7 @@ class TradeCreate(BaseModel):
     strategy_id: int
     symbol: str
     pnl: float
-    open_datetime: date
-    close_datetime: date
+    open_datetime: datetime
+    close_datetime: datetime
     ticket_id: int
     current_balance: float
