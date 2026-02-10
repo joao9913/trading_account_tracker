@@ -11,8 +11,12 @@ class AccountCreate(BaseModel):
     starting_date: date
 
 class StrategyCreate(BaseModel):
-    id: int
     account_id: int
     name: str
 
-class TradeCreate(BaseModel)
+class TradeCreate(BaseModel):
+    strategy_id: int
+    symbol: str
+    pnl: float
+    open_datetime: date
+    close_datetime: date

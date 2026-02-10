@@ -1,5 +1,5 @@
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import Column, Integer, Numeric, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, Numeric, String, ForeignKey, Date, DateTime
 from app.database import Base
 
 class Account(Base):
@@ -32,5 +32,7 @@ class Trade(Base):
     strategy_id = Column(Integer, ForeignKey("strategy.id"), nullable=False)
     symbol = Column(String(10), nullable=False)
     pnl = Column(Numeric(12, 2), nullable=False)
+    open_datetime = Column(DateTime, nullable=False)
+    close_datetime = Column(DateTime)
 
     strategy = relationship("Strategy", back_populates="trades")
