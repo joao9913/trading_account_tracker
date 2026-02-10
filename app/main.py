@@ -68,12 +68,13 @@ def create_trade(payload: TradeCreate, db: Session = Depends(get_db)):
     if not strategy:
         raise HTTPException(status_code=404, detail="Strategy does not exist.")
 
-    trade = Trade(**payload.model_dump())
+    trade_data = payload.model_dump()
+    current_balance = trade_data.pop("current_balance")
+    trade = Trade(**trade_data)
     db.add(trade)
 
-    #Update account current balance
     account = strategy.account
-    account.current_balance = payload.current_balance
+    account.current_balance = current_balance
 
     db.commit()
     db.refresh(trade)

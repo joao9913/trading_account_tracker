@@ -17,3 +17,7 @@ Thumbs.db
 
 #Ignore pg_pw.txt
 pg_pw.txt
+
+# Ignore alembic files and folders
+alembic/
+alembic.ini
