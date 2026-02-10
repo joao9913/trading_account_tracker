@@ -20,3 +20,4 @@ class TradeCreate(BaseModel):
     pnl: float
     open_datetime: date
     close_datetime: date
+    ticket_id: int

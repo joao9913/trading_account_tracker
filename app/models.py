@@ -31,8 +31,9 @@ class Trade(Base):
     id = Column(Integer, primary_key=True)
     strategy_id = Column(Integer, ForeignKey("strategy.id"), nullable=False)
     symbol = Column(String(10), nullable=False)
-    pnl = Column(Numeric(12, 2), nullable=False)
+    pnl = Column(Numeric(12, 2))
     open_datetime = Column(DateTime, nullable=False)
     close_datetime = Column(DateTime)
+    ticket_id = Column(Integer, nullable=False)
 
     strategy = relationship("Strategy", back_populates="trades")
