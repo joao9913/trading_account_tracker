@@ -83,9 +83,14 @@ async def create_trade(request: Request, db: Session = Depends(get_db)):
 
     strategy.account.current_balance = current_balance
 
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback() #duplicate trade detected
+        return {"status": "duplicate", "ticket_id":payload.ticket_id}
+    
+    
     db.refresh(trade)
-
     return trade
 
 # ADMIN DELE ENDPOINT

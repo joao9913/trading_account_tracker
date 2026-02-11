@@ -1,5 +1,5 @@
-from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import Column, Integer, Numeric, String, ForeignKey, Date, DateTime
+from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, Numeric, String, ForeignKey, Date, DateTime, UniqueConstraint
 from app.database import Base
 
 class Account(Base):
@@ -35,5 +35,7 @@ class Trade(Base):
     open_datetime = Column(DateTime, nullable=False)
     close_datetime = Column(DateTime)
     ticket_id = Column(Integer, nullable=False)
+
+    __table_args__ = (UniqueConstraint("ticket_id", name="unique_ticket"))
 
     strategy = relationship("Strategy", back_populates="trades")
