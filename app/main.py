@@ -1,8 +1,11 @@
-from fastapi import FastAPI, Depends, HTTPException, Request, Form
+from fastapi import FastAPI, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from app.deps import get_db
 from app.models import Account, Strategy, Trade
 from app.schemas import AccountCreate, StrategyCreate, TradeCreate
+from sqlalchemy import text
+import json
+from sqlalchemy.exc import IntegrityError
 
 app = FastAPI()
 
@@ -63,20 +66,37 @@ def create_strategy(payload: StrategyCreate, db: Session = Depends(get_db)):
 
 # TRADE POST ENDPOINTS
 @app.post("/mt5/trades", status_code=201)
-def create_trade(payload: TradeCreate, db: Session = Depends(get_db)):
+async def create_trade(request: Request, db: Session = Depends(get_db)):
+    raw = await request.body()
+    data = json.loads(raw)
+    payload = TradeCreate(**data)
+
     strategy = db.get(Strategy, payload.strategy_id)
     if not strategy:
         raise HTTPException(status_code=404, detail="Strategy does not exist.")
 
     trade_data = payload.model_dump()
     current_balance = trade_data.pop("current_balance")
+
     trade = Trade(**trade_data)
     db.add(trade)
 
-    account = strategy.account
-    account.current_balance = current_balance
+    strategy.account.current_balance = current_balance
 
     db.commit()
     db.refresh(trade)
 
     return trade
+
+# ADMIN DELE ENDPOINT
+@app.delete("/admin/reset")
+def reset_db(secret: str, db:Session = Depends(get_db)):
+    if secret != "joao9913":
+        raise HTTPException(status_code=403)
+
+    db.execute(text("TRUNCATE TABLE trade RESTART IDENTITY CASCADE"))
+    db.execute(text("TRUNCATE TABLE strategy RESTART IDENTITY CASCADE"))
+    db.execute(text("TRUNCATE TABLE account RESTART IDENTITY CASCADE"))
+    db.commit()
+
+    return {"status": "database reset"}
