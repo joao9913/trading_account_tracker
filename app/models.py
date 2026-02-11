@@ -12,6 +12,8 @@ class Account(Base):
     profit_target = Column(Numeric(12, 2), nullable=False)
     max_drawdown = Column(Numeric(12, 2), nullable=False)
     starting_date = Column(Date, nullable=False)
+    ending_date = Column(Date)
+    account_status = Column(String, nullable=False)
 
     strategies = relationship("Strategy", back_populates="account", cascade="all, delete-orphan")
 

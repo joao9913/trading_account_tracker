@@ -9,6 +9,8 @@ class AccountCreate(BaseModel):
     profit_target: float
     max_drawdown: float
     starting_date: date
+    final_date: date
+    account_status: str
 
 class StrategyCreate(BaseModel):
     account_id: int
