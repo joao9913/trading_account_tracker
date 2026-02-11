@@ -22,7 +22,7 @@ class Strategy(Base):
     account_id = Column(Integer, ForeignKey("account.id"),nullable=False)
     name = Column(String(30), nullable=False)
 
-    __table_args__ =(UniqueConstraint("account_id", "name", name="unique_strategy_per_account"))
+    __table_args__ =(UniqueConstraint("account_id", "name", name="unique_strategy_per_account"),)
 
     account = relationship("Account", back_populates="strategies")
     trades = relationship("Trade", back_populates="strategy", cascade="all, delete-orphan")
@@ -38,6 +38,6 @@ class Trade(Base):
     close_datetime = Column(DateTime)
     ticket_id = Column(Integer, nullable=False)
 
-    __table_args__ = (UniqueConstraint("ticket_id", "strategy_id", name="unique_ticket_per_strategy"))
+    __table_args__ = (UniqueConstraint("ticket_id", "strategy_id", name="unique_ticket_per_strategy"),)
 
     strategy = relationship("Strategy", back_populates="trades")
