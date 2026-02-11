@@ -17,6 +17,7 @@ class Account(Base):
 
     strategy_id = Column(Integer, ForeignKey("strategy.id"), nullable=False)
     strategy = relationship("Strategy", back_populates="accounts")
+    trades = relationship("Trade", back_populates="account", cascade="all, delete-orphan")
 
 class Strategy(Base):
     __tablename__ = "strategy"
@@ -25,15 +26,13 @@ class Strategy(Base):
     name = Column(String(30), nullable=False, unique=True)
     
     accounts = relationship("Account", back_populates="strategy")
-    trades = relationship("Trade", back_populates="strategy", cascade="all, delete-orphan")
-
     
 class Trade(Base):
     __tablename__ = "trade"
 
-    id = Column(Integer, primary_key=True, index = True)
-    account_id = Column(Integer, ForeignKey("account.id"), nullable=False)  # new field
-    strategy_id = Column(Integer, ForeignKey("strategy.id"), nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    account_id = Column(Integer, ForeignKey("account.id"), nullable=False)
+
     symbol = Column(String, nullable=False)
     pnl = Column(Numeric(12, 2))
     open_datetime = Column(DateTime, nullable=False)
@@ -41,8 +40,7 @@ class Trade(Base):
     ticket_id = Column(Integer, nullable=False)
 
     __table_args__ = (
-        UniqueConstraint("ticket_id", "strategy_id", name="unique_ticket_per_strategy"),
+        UniqueConstraint("ticket_id", "account_id", name="unique_ticket_per_account"),
     )
 
-    strategy = relationship("Strategy", back_populates="trades")
-    account = relationship("Account")  # link back to account
+    account = relationship("Account", back_populates="trades")

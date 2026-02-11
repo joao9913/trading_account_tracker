@@ -1,8 +1,7 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 from app.deps import get_db
-from app.models import Account, Strategy
-from app.schemas import StrategyCreate
+from app.models import Account, Strategy, Trade
 
 router = APIRouter()
 
@@ -14,11 +13,11 @@ def get_strategies(db: Session = Depends(get_db)):
     return db.query(Strategy).all()
 
 # ------------------------------------
-# List a single strategy and its trades
+# List a single strategy
 # ------------------------------------
 @router.get("/strategies/{strategy_id}")
 def get_strategy(strategy_id: int, db: Session = Depends(get_db)):
-    strategy = db.get(Strategy, strategy_id)
+    strategy = db.query(Trade).join(Account).filter(Account.strategy_id == strategy_id)
     if not strategy:
         raise HTTPException(status_code=404, detail="Strategy not found")
     return strategy
@@ -31,6 +30,5 @@ def get_strategy_account(account_id: int, db: Session = Depends(get_db)):
     account = db.get(Account, account_id)
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
-    
-    strategy = db.get(Strategy, account.strategy_id)
-    return strategy
+
+    return account.strategy

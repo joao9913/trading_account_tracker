@@ -18,10 +18,11 @@ def create_account(payload: AccountCreate, db: Session = Depends(get_db)):
     # Find predefined strategy by name
     strategy = db.query(Strategy).filter_by(name=payload.strategy_name).first()
     if not strategy:
-        raise HTTPException(status_code = 404, detail = "Strategy '{payload.strategy_name}' not found") 
+        raise HTTPException(status_code = 404, detail=f"Strategy '{payload.strategy_name}' not found") 
     
     account_data = payload.model_dump()
     account_data["strategy_id"] = strategy.id
+    account = Account(**account_data)
 
     account = Account(**account_data)
 
@@ -42,12 +43,5 @@ def get_accounts(db: Session = Depends(get_db)):
 # List details of a single account
 # ------------------------------------
 @router.get("/accounts/{account_id}/trades")
-def get_trades_account(account_id: int, db:Session = Depends(get_db)):
-    trades = (
-        db.query(Trade)
-        .join(Strategy, Trade.strategy_id == Strategy.id)
-        .join(Account, Account.strategy_id == Strategy.id)
-        .filter(Account.id == account_id)
-        .all()
-    )
-    return trades
+def get_trades_account(account_id: int, db: Session = Depends(get_db)):
+    return db.query(Trade).filter(Trade.account_id == account_id).all()

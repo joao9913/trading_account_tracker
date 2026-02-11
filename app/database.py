@@ -5,6 +5,7 @@ import os
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 engine = create_engine(DATABASE_URL, echo=True, future=True)
 
