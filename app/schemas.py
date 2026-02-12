@@ -10,7 +10,7 @@ class AccountCreate(BaseModel):
     max_drawdown: float
     starting_date: date
     account_status: str
-    strategy_name: str
+    strategy_id: int
 
 class StrategyCreate(BaseModel):
     name: str

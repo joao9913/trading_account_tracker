@@ -15,12 +15,9 @@ def get_strategies(db: Session = Depends(get_db)):
 # ------------------------------------
 # List a single strategy
 # ------------------------------------
-@router.get("/strategies/{strategy_id}")
+@router.get("/{strategy_id}")
 def get_strategy(strategy_id: int, db: Session = Depends(get_db)):
-    strategy = db.query(Trade).join(Account).filter(Account.strategy_id == strategy_id)
-    if not strategy:
-        raise HTTPException(status_code=404, detail="Strategy not found")
-    return strategy
+    return db.query(Strategy).filter(Strategy.id == strategy_id).all()
 
 # ------------------------------------
 # List a single strategy of a given account
