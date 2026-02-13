@@ -21,7 +21,7 @@ class AccountRead(BaseModel):
     starting_date: date
     ending_date: date | None
     account_status: str
-    strategy: StrategyRead
+    strategy_id: int
 
     class Config:
         from_attributes = True
