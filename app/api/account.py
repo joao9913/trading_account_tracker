@@ -3,13 +3,14 @@ from sqlalchemy.orm import Session
 from app.deps import get_db
 from app.models import Account, Strategy, Trade
 from app.schemas import AccountCreate
+from app.deps_auth import api_key_auth
 
 router = APIRouter()
 
 # ------------------------------------
 # Insert a new account
 # ------------------------------------
-@router.post("/accounts", status_code = 201)
+@router.post("/accounts", status_code = 201, dependencies=[Depends(api_key_auth)])
 def create_account(payload: AccountCreate, db: Session = Depends(get_db)):
     existing = db.get(Account, payload.id)
     if existing:

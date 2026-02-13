@@ -5,13 +5,14 @@ from app.models import Strategy, Trade, Account
 from app.schemas import TradeCreate
 import json
 from sqlalchemy.exc import IntegrityError
+from app.deps_auth import mt5_auth
 
 router = APIRouter()
 
 # ------------------------------------
 # Insert a new trade
 # ------------------------------------
-@router.post("/mt5/trades", status_code=201)
+@router.post("/mt5/trades", status_code=201, dependencies=[Depends(mt5_auth)])
 async def create_trade(request: Request, db: Session = Depends(get_db)):
     raw = await request.body()
     data = json.loads(raw)
