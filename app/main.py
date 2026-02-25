@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Header, HTTPException, Depends
+from fastapi import FastAPI, Header, HTTPException, Depends, Request
 from app.api import account, trade, strategy, admin
+from fastapi.responses import JSONResponse
 from app.config import settings
 from fastapi.middleware.cors import CORSMiddleware
+import logging
 
 if settings.ENV == "production":
     app = FastAPI(
@@ -12,6 +14,14 @@ if settings.ENV == "production":
     )
 else:
     app = FastAPI(title="Account Tracker")
+
+logger = logging.getLogger("uvicorn.error")
+
+@app.exception_hander(Exception)
+async def global_esception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled exception at {request.url}: {exc}", exc_info=True)
+    return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
+
 
 app.add_middleware(
     CORSMiddleware,
