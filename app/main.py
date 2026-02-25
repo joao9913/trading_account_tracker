@@ -63,3 +63,5 @@ def db_test():
         return {"db_test": result[0]}
     except Exception as e:
         return {"error": str(e)}
+
+app.include_router(router, prefix="", tags=["Test"])
