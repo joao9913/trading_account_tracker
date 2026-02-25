@@ -17,7 +17,7 @@ else:
 
 logger = logging.getLogger("uvicorn.error")
 
-@app.exception_hander(Exception)
+@app.exception_handler(Exception)
 async def global_esception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled exception at {request.url}: {exc}", exc_info=True)
     return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
