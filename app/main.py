@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Header, HTTPException, Depends, Request
+from fastapi import FastAPI, Header, HTTPException, Depends, Request, APIRouter
 from app.api import account, trade, strategy, admin
 from fastapi.responses import JSONResponse
 from app.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 import logging
+import psycopg2
 
 if settings.ENV == "production":
     app = FastAPI(
@@ -47,3 +48,18 @@ def health_check():
 @app.get("/", tags=["Root"])
 def root():
     return {"status": "ok"}
+
+router = APIRouter()
+
+@router.get("/db-test")
+def db_test():
+    import os
+    try:
+        conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+        cur = conn.cursor()
+        cur.execute("SELECT 1;")
+        result = cur.fetchone()
+        conn.close()
+        return {"db_test": result[0]}
+    except Exception as e:
+        return {"error": str(e)}
